@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "email": "son@gmail.com",
+    "password": 1234,
+    "role": "STUDENT",
+    "createdAt": "2023-11-01 00:00:00",
+    "updatedAt": "2023-11-01 00:00:00"
+  },
+  {
+    "id": 2,
+    "email": "neo@gmail.com",
+    "password": 1234,
+    "role": "MANAGER",
+    "createdAt": "1999-03-31 00:00:00",
+    "updatedAt": "2023-11-01 00:00:00"
+  }
+]
