@@ -203,6 +203,9 @@ app.post('/quest/:id/answer', (req, res) => {
 
   const user = users.find((user) => user.email === email);
   const quest = questions.find((quest) => quest.id == id);
+  if (!quest) {
+    return res.status(400).send('질문이 존재 하지 않습니다.');
+  }
   const newId = answers.length > 0 ? answers[answers.length - 1].id + 1 : 1;
   const newAnswer = {
     id: newId,
@@ -222,25 +225,35 @@ app.put('/quest/:id/answer/:answerId', (req, res) => {
   if (!email || !password || !description) {
     return res.status(400).send('모두 입력해주세요.');
   }
-  const userIndex = answers.findIndex((answer) => `${answer.id}` === id);
+  const answerIndex = answers.findIndex(
+    (answer) => `${answer.id}` === answerId,
+  );
+  const answer = answers[answerIndex];
+  const userIndex = users.findIndex((user) => `${user.id}` === answer.userId);
   const user = users[userIndex];
-  const questIndex = questions.findIndex((quest) => `${quest.id}` === id);
-  const quest = questions[questIndex];
-  const index = answers.findIndex((answer) => `${answer.id}` === id);
+  if (email !== user.email || password !== user.password) {
+    res.status(400).send('이메일과 비밀번호가 일치하지 않습니다.');
+  }
   const updatedAnswer = {
-    id,
+    ...answer,
     description,
-    userId: user.id,
-    questId: quest.id,
-    createdAt: answers[index].createdAt,
     updatedAt: new Date(),
   };
-  answers.splice(index, 1, updatedAnswer);
+  answers.splice(answerIndex, 1, updatedAnswer);
   res.send(updatedAnswer);
 });
 
 app.delete('/quest/:id/answer/:answerId', (req, res) => {
   res.send('답변글 삭제 완료');
+  // req.params에서 질문id와 답변id
+  // req.body에서 이메일과 비밀번호
+  // req.body 값을 모두 작성해야 한다.
+  // db에서 답변 아이디에 해당하는 답변을 조회한다.
+  // db에서 답변을 작성한 유저 아이디로 유저를 조회한다.
+  // 해당 유저와 body에서 받은 유저를 대조한다. (해당 답변글을 작성한 유저)
+  // db에서 이메일로 유저를 조회한다.
+  // 해당 유저의 role이 매니저인지 확인한다. (매니저인 경우)
+  // 해당 질문에 있는 답변글을 삭제한다.
 });
 
 app.listen(port, () => {
